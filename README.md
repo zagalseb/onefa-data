@@ -47,8 +47,13 @@ teams = pd.read_parquet(url)
 
 ## Actualizar los datos
 
-1. Editar `data-raw/teams.csv`.
-2. Correr `python scripts/build_teams.py` (necesita `pandas` y `pyarrow`).
-3. Subir los cambios. El script no genera nada si encuentra IDs repetidos, colores mal escritos o coordenadas fuera de Mexico.
+Solo hay que subir `data-raw/teams.csv`. Una GitHub Action (`.github/workflows/build-teams.yml`) valida el CSV, regenera `teams/onefa_teams.parquet` y lo guarda sola.
+
+1. Editar `data-raw/teams.csv` (mismos nombres de columna) y subirlo a `main`.
+2. Revisar la pestana **Actions** del repo: una palomita verde significa que el parquet se actualizo; una X roja significa que el CSV tiene un error (el log dice cual) y el parquet anterior sigue intacto.
+
+La validacion rechaza IDs o abreviaturas repetidos, colores que no sean `#RRGGBB`, campos obligatorios vacios y coordenadas fuera de Mexico.
+
+Para generarlo a mano: `python scripts/build_teams.py` (necesita `pandas` y `pyarrow`). Si trabajas en local, haz `git pull` antes de editar, porque la Action agrega commits.
 
 El `id` de un equipo no cambia aunque cambie su nombre; todo lo demas (juegos, jugadores, jugadas) se va a referenciar con ese `id`.
